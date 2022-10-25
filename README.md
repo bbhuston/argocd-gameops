@@ -21,7 +21,7 @@ GameOps uses the workflow shown below to provision an initial GCP environment an
 
 Click on the following link to clone this repository into a fresh Google Cloud Shell development environment.
 
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbbhuston%2Fargocd-gameops.git&cloudshell_git_branch=main&cloudshell_open_in_editor=.README.md&cloudshell_workspace=.)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbbhuston%2Fargocd-gameops.git&cloudshell_git_branch=main&cloudshell_open_in_editor=README.md&cloudshell_workspace=.)
 
 #### Check out the latest stable version of the GameOps blueprint
 
@@ -62,6 +62,19 @@ Next, create a hardened GKE cluster and install ArgoCD on it.
 ```
 make prepare-gcp-environment
 ```
+
+#### Access the ArgoCD admin console
+
+Once the initial provisioning process has completed, navigate to final step of the Cloud Build provisoning pipeline that was created in your landing zone project for details on how to connect to the ArgoCD admin console for the first time.  
+
+- These connection details include, the ArgoCD admin console URL, the default admin username, and the default admin password.
+- Please be sure to change your intial admin password at some point by following [these instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_account_update-password/)
+- Both the ArgoCD URLs and passwords are randomly generated as part of the provisioning process.
+
+![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-details.png)
+
+Finally, open the ArgoCD admin console URL (e.g., `https://gameops.demo-87ff.xyz`) that you see in your browser and use the auto-generated login details to get started with ArgoCD.
+![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-details.png)
 
 ## Cleaning up
 
