@@ -74,7 +74,7 @@ Once the initial provisioning process has completed, navigate to final step of t
 ![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-details.png)
 
 Finally, open the ArgoCD admin console URL (e.g., `https://gameops.demo-87ff.xyz`) that you see in your browser and use the auto-generated login details to get started with ArgoCD.
-![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-details.png)
+![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-screen.png)
 
 ## Cleaning up
 
