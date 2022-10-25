@@ -1,0 +1,139 @@
+steps:
+  - id: "Prepare Cloud Build workspace"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        echo '-------------------------------------------------------------------------------------'
+        echo
+        echo 	Checking your Cloud Build workspace...
+        echo
+        echo '-------------------------------------------------------------------------------------'
+        sleep 1s
+        cd /workspace && ls -lah /workspace
+        echo '-------------------------------------------------------------------------------------'
+        echo
+        echo 	Writing environment variables...
+        echo
+        echo '-------------------------------------------------------------------------------------'
+        sleep 1s
+        gcloud secrets versions access "latest" --secret=gameops-configs > make_env
+        cat make_env
+  # - id: "Create Google Identity Groups"
+  #   name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+  #   dir: /workspace
+  #   entrypoint: /bin/bash
+  #   args:
+  #     - '-c'
+  #     - |
+  #       set -e
+  #       make -s create-google-identity-groups
+  #   waitFor: ["Prepare Cloud Build workspace"]
+  # - id: "Assign super-user group permissions"
+  #   name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+  #   dir: /workspace
+  #   entrypoint: /bin/bash
+  #   args:
+  #     - '-c'
+  #     - |
+  #       set -e
+  #       make -s assign-super-user-group-permissions
+  #   waitFor: ["Create Google Identity Groups"]
+  - id: "Enable GCP APIs"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s enable-gcp-apis
+        # Wait for API configuration to finish
+        sleep 20s
+    waitFor: ["Prepare Cloud Build workspace"]
+  - id: "Configure Org Policies"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s configure-org-policies -e ORG_POLICY_NAME=restrictVpcPeering
+        make -s configure-org-policies -e ORG_POLICY_NAME=requireShieldedVm
+    waitFor: ["Enable GCP APIs"]
+  - id: "Configure IAM"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s configure-iam
+    waitFor: ["Configure Org Policies"]
+  - id: "Create Cloud Domain"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s create-cloud-domain || exit 0   
+    waitFor: ["Configure IAM"]
+  - id: "Create VPC"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s create-vpc || exit 0
+    waitFor: ["Create Cloud Domain"]
+  - id: "Create GitOps admin cluster"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s create-admin-cluster || exit 0
+    waitFor: ["Create VPC"]
+  - id: "Bootstrap ArgoCD"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        make -s bootstrap-argocd 
+    waitFor: ["Create GitOps admin cluster"]
+  # - id: "Configure GKE backup and restore"
+  #   name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+  #   dir: /workspace
+  #   entrypoint: /bin/bash
+  #   args:
+  #     - '-c'
+  #     - |
+  #       set -e
+  #       make -s configure-gke-backup-and-restore
+  #   waitFor: ["Create GitOps admin cluster"]
+  # - id: "Configure Policy Controller"
+  #   name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+  #   dir: /workspace
+  #   entrypoint: /bin/bash
+  #   args:
+  #     - '-c'
+  #     - |
+  #       set -e
+  #       make -s configure-policy-controller
+  #   waitFor: ["Configure GKE backup and restore"]
+# Set timeout equal to 100 minutes
+timeout: 6000s

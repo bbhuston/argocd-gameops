@@ -1,0 +1,8 @@
+.idea/
+blueprints/
+source-repo/
+access-token-file
+application_default_credentials.json
+make_env
+scratch.sh
+temp

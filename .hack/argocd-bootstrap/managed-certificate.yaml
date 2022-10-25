@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: argocd-certificate
+  namespace: argocd
+spec:
+  # Up to 100 sub-domains can be added to this certificate
+  domains:
+    - ARGOCD_SUBDOMAIN.ARGOCD_DOMAIN

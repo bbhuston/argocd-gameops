@@ -1,0 +1,7 @@
+#  Example Resource Manager Policy
+#  Uncomment and apply with gcloud
+
+name: projects/PROJECT_ID/policies/compute.requireOsLogin
+spec:
+  rules:
+    - enforce: false

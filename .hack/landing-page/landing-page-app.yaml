@@ -1,0 +1,117 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: landing-page
+  name: landing-page
+spec:
+  selector:
+    matchLabels:
+      app: landing-page
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: landing-page
+    spec:
+      containers:
+        - name: landing-page
+          image: "bbhuston/landing-page:v1.0.0-anthos"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 200m
+              memory: 128Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing-page
+spec:
+  type: ClusterIP
+  # type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: landing-page
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: landing-page-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "landing-page-ip-address"
+    networking.gke.io/managed-certificates: "landing-page-certificate"
+    # kubernetes.io/ingress.class: "gce"
+    networking.gke.io/v1beta1.FrontendConfig: "landing-page-frontend-config"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  rules:   
+    - host: "info.demo-7879.xyz"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: landing-page
+                port:
+                  number: 80
+
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: landing-page-frontend-config
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: PERMANENT_REDIRECT
+
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: landing-page-certificate
+spec:
+  # Up to 100 sub-domains can be added to this certificate
+  domains:
+    - "info.demo-7879.xyz"
+
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeAddress
+metadata:
+  annotations:
+    cnrm.cloud.google.com/project-id: "gameops-landing-zone-055"
+  name: landing-page-ip-address
+spec:
+  location: global
+
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSRecordSet
+metadata:
+  annotations:
+    cnrm.cloud.google.com/project-id: "gameops-landing-zone-055"
+  name: landing-page-dns-a-record
+spec:
+  name: "info.demo-7879.xyz."
+  type: "A"
+  ttl: 300
+  managedZoneRef:
+    # This DNS zone is pre-created as part of the ArgoCD bootstrap
+    external: "argocd-dns-zone"
+  rrdatas:
+    - "6.6.6.6"

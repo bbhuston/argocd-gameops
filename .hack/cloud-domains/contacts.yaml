@@ -1,0 +1,30 @@
+registrantContact:
+  email: 'DOMAIN_VERIFICATION_EMAIL_ADDRESS'
+  phoneNumber: '+1.8005550123'
+  postalAddress:
+    regionCode: 'US'
+    postalCode: '94043'
+    administrativeArea: 'CA'
+    locality: 'Mountain View'
+    addressLines: ['1600 Amphitheatre Pkwy']
+    recipients: ['Registrant Contact']
+adminContact:
+  email: 'DOMAIN_VERIFICATION_EMAIL_ADDRESS'
+  phoneNumber: '+1.8005550123'
+  postalAddress:
+    regionCode: 'US'
+    postalCode: '94043'
+    administrativeArea: 'CA'
+    locality: 'Mountain View'
+    addressLines: ['1600 Amphitheatre Pkwy']
+    recipients: ['Admin Contact']
+technicalContact:
+  email: 'DOMAIN_VERIFICATION_EMAIL_ADDRESS'
+  phoneNumber: '+1.8005550123'
+  postalAddress:
+    regionCode: 'US'
+    postalCode: '94043'
+    administrativeArea: 'CA'
+    locality: 'Mountain View'
+    addressLines: ['1600 Amphitheatre Pkwy']
+    recipients: ['Technical Contact']

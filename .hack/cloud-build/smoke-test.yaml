@@ -1,0 +1,41 @@
+steps:
+  - id: "Prepare Cloud Build workspace"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e
+        echo '-------------------------------------------------------------------------------------'
+        echo
+        echo 	Checking your Cloud Build workspace...
+        echo
+        echo '-------------------------------------------------------------------------------------'
+        sleep 1s
+        cd /workspace && ls -lah /workspace
+        echo '-------------------------------------------------------------------------------------'
+        echo
+        echo 	Writing environment variables...
+        echo
+        echo '-------------------------------------------------------------------------------------'
+        sleep 1s
+        gcloud secrets versions access "latest" --secret=gameops-configs > make_env
+        make -s add-project-number
+        make -s create-resource-sha
+        cat make_env
+  - id: "Run Smoke Test"
+    name: docker.io/bbhuston/gcloud-make:392.0.0-alpine
+    dir: /workspace
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        set -e 
+        make -s set-gcp-project
+        make -s create-google-identity-groups
+        # ${_COMMAND}
+    waitFor: ["Prepare Cloud Build workspace"]
+timeout: 1000s
+substitutions:
+  _COMMAND: "echo hello world"

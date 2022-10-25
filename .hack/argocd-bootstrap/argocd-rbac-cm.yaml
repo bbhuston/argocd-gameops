@@ -1,0 +1,42 @@
+###  Uncomment this example and add in your SSO values
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: argocd-rbac-cm
+#   namespace: argocd
+#   labels:
+#     app.kubernetes.io/name: argocd-rbac-cm
+#     app.kubernetes.io/part-of: argocd
+# data:
+#   url: https://ARGOCD_SUBDOMAIN.ARGOCD_DOMAIN
+#   ## Example
+#   # url: https://gameops.demo-fee2.xyz
+#   dex.config: |
+#     connectors:
+#     - config:
+#         issuer: https://accounts.google.com
+#         clientID: CLIENT_ID
+#         clientSecret: CLIENT_SECRET
+#         ## Example
+#         # clientID: 926480502870-qfqm41ul457nor5kq87nhle34sf6lu5q.apps.googleusercontent.com
+#         # clientSecret: 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
+#       type: oidc
+#       id: google
+#       name: Google
+#   # Policy rules are in the form:
+#   #   p, subject, resource, action, object, effect
+#   # Role definitions and bindings are in the form:
+#   #   g, subject, inherited-subject
+#   # See https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md for additional information.
+#   policy.csv: |
+#     GCP_SUPER_USER, role:admin
+#     ## Example
+#     # g, admin@benhuston.altostrat.com, role:admin
+#   # GCP_SUPER_USER, role:admin
+#   # policy.default is the name of the default role which Argo CD will falls back to, when
+#   # authorizing API requests (optional). If omitted or empty, users may be still be able to login,
+#   # but will see no apps, projects, etc...
+#   policy.default: role:readonly
+#   # scopes controls which OIDC scopes to examine during rbac enforcement (in addition to `sub` scope).
+#   # If omitted, defaults to: '[groups]'. The scope value can be a string, or a list of strings.
+#   scopes: '[groups, email]'
