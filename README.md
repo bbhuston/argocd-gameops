@@ -10,8 +10,8 @@ GameOps uses the workflow shown below to provision an initial GCP environment an
 
 - A GameOps Platform Admin bootstraps a [Cloud Build](https://cloud.google.com/build) *'provisioning pipeline'* and then uses this to create a GCP landing zone project and a hardened GKE cluster which has been pre-provisioned with [ArgoCD](https://argoproj.github.io/cd/) (aka an 'ArgoCD admin cluster').
 - The ArgoCD admin cluster instance uses several powerful Kubernetes frameworks, such as [Policy Controller](https://cloud.google.com/anthos-config-management/docs/concepts/policy-controller), to create and manage Google Cloud resources using [Kubernetes Resource Model](https://github.com/kubernetes/design-proposals-archive/blob/main/architecture/resource-management.md) (KRM) tooling and a GitOps-centric approach to declarative configuration management.
-- Once the intial GCP landing zone environment is ready, the GameOps Platform Admin customizes and bundles (think [Kustomize](https://kustomize.io/) or [Helm](https://helm.sh/)) Kubernetes manifests into curated Kubernetes packages, commonly referred to as ['blueprints'](https://cloud.google.com/anthos-config-management/docs/concepts/blueprints), using the Cloud Build provisioning pipeline.  These blueprints are staged in a *'source repo'* code repository, instantiated using the hydration trigger, and then finally committed to a *'deployment repo'* code repository which is monitored by ArgoCD.
-- When ArgoCD detects changes to the deployment repo, it automatically applies this new configuration to your GCP Organization.  This process serves as the basis of a [GitOps reconcilation loop](https://thenewstack.io/kubecon-cloud-native-patterns-of-the-gitops-pipeline/) that is used to continually create and manage the specific GCP resources which are defined in the various Kubernetes blueprint packages that GameOps relies upon.
+- Once the intial GCP landing zone environment is ready, the GameOps Platform Admin can proceed to customize and bundle (think [Kustomize](https://kustomize.io/) or [Helm](https://helm.sh/)) Kubernetes manifests into curated Kubernetes packages, commonly referred to as ['blueprints'](https://cloud.google.com/anthos-config-management/docs/concepts/blueprints), using the Cloud Build provisioning pipeline.  These blueprints should be staged in a source code repository (aka *source repo*) and actively monitored by ArgoCD.
+- When ArgoCD detects changes to this source repo, it automatically applies this new configuration to your GCP Organization.  This process serves as the basis of a [GitOps reconcilation loop](https://thenewstack.io/kubecon-cloud-native-patterns-of-the-gitops-pipeline/) that is used to continually create and manage the specific GCP resources which are defined in the various Kubernetes blueprint packages that GameOps relies upon.
 
 ![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/how-it-works.png)
 
@@ -31,37 +31,26 @@ GAMEOPS_VERSION=v0.1.0
 git checkout ${GAMEOPS_VERSION}
 ```
 
-#### Prepare your metadata
-
-First, define some important GCP environment variables and paste this information into your terminal.
-```
-PROJECT_ID="Enter your new GCP landing zone Project ID"
-ORGANIZATION_ID="Enter your GCP Organization ID"
-BILLING_ACCOUNT_ID="Enter your GCP Billing Account ID"
-GOOGLE_ADMIN_DOMAIN="Enter the Google Workspace Admin Domain used by your GCP Organization (e.g., your-gcp-username.altostrat.com)"
-GCP_SUPER_USER="Enter your GCP Organization super-user's email alias (e.g., admin@your-gcp-username.altostrat.com)"
-DOMAIN_VERIFICATION_EMAIL_ADDRESS="Enter an email address that can be used to verify a domain name (e.g., your-real-email@example.com)
-```
-
-Now persist these values by writing them locally to `make_env`.
-```
-cat << EOF > make_env
-PROJECT_ID=${PROJECT_ID}
-ORGANIZATION_ID=${ORGANIZATION_ID}
-BILLING_ACCOUNT_ID=${BILLING_ACCOUNT_ID}
-GOOGLE_ADMIN_DOMAIN=${GOOGLE_ADMIN_DOMAIN}
-GCP_SUPER_USER=${GCP_SUPER_USER}
-DOMAIN_VERIFICATION_EMAIL_ADDRESS=${DOMAIN_VERIFICATION_EMAIL_ADDRESS}
-EOF
-```
-
 #### Prepare your GCP environment
 
-Next, create a hardened GKE cluster and install ArgoCD on it.
+Let's get started by running the following command in your Cloud Shell terminal to start the provisioning process.
 
 ```
 make prepare-gcp-environment
 ```
+
+You will immediately be prompted to authenicate and to enter some important GCP environment variables into your terminal.  Behind the scenes, these values will be locally persisted to a file named `make_env`.
+
+```
+PROJECT_ID:  Enter your desired new GCP landing zone Project ID (e.g., amazing-example-gcp-project-001)
+ORGANIZATION_ID:  Enter your GCP Organization ID (e.g., 561908118928)
+BILLING_ACCOUNT_ID:  Enter your GCP Billing Account ID (e.g., 01B0F5-7AF23D-AC4712)
+GOOGLE_ADMIN_DOMAIN:  Enter the Google Admin Domain used by your GCP Organization (e.g., gc-trial-9090.orgtrials.ongcp.co)
+GCP_SUPER_USER:  Enter your email alias which has GCP Organization super-user permissions (e.g., your-email@example.com)
+DOMAIN_VERIFICATION_EMAIL_ADDRESS:  Enter an email address that can be used to verify a domain name (e.g., your-email@example.com)
+```
+
+Once these environment variables have been provided, the provisioning process will automatically proceed ahead by creating a hardened GKE cluster, installing ArgoCD on it, and doing tons of other random (but important) stuff.  This process will take about 90 minutes to complete, so feel free to take a break and check back in later.
 
 #### Access the ArgoCD admin console
 
