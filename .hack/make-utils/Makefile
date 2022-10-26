@@ -41,13 +41,14 @@ create-gcp-project:
 
 create-google-identity-groups:
 	# Wait for Identity API to fully initialize
+	@make -s set-gcp-project
 	@gcloud --project ${PROJECT_ID} services enable cloudresourcemanager.googleapis.com cloudidentity.googleapis.com ${ACCESS_TOKEN_FILE}
 	@echo '-----------------------------------------------------------------------------------------------------'
 	@echo
 	@echo 	Waiting for the Google Identity API to finish initializing...
 	@echo
 	@echo '-----------------------------------------------------------------------------------------------------'
-	@sleep 120s
+	@sleep 130s
 	@echo '-----------------------------------------------------------------------------------------------------'
 	@echo
 	@echo 	Creating Google Identity Groups...
