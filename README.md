@@ -46,7 +46,7 @@ PROJECT_ID:  Enter your desired new GCP landing zone Project ID (e.g., amazing-e
 ORGANIZATION_ID:  Enter your GCP Organization ID (e.g., 561908118928)
 BILLING_ACCOUNT_ID:  Enter your GCP Billing Account ID (e.g., 01B0F5-7AF23D-AC4712)
 GOOGLE_ADMIN_DOMAIN:  Enter the Google Admin Domain used by your GCP Organization (e.g., gc-trial-9090.orgtrials.ongcp.co)
-GCP_SUPER_USER:  Enter your email alias which has GCP Organization super-user permissions (e.g., your-email@example.com)
+GCP_SUPER_USER:  Enter your Google Admin Super Admin email address (e.g., admin@gc-trial-9090.orgtrials.ongcp.co)
 DOMAIN_VERIFICATION_EMAIL_ADDRESS:  Enter an email address that can be used to verify a domain name (e.g., your-email@example.com)
 ```
 
