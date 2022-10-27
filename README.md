@@ -8,10 +8,10 @@
 
 GameOps uses the workflow shown below to provision an initial GCP environment and other various supportive tooling.  The main components of this overall workflow are as follows:
 
-- A GameOps Platform Admin bootstraps a [Cloud Build](https://cloud.google.com/build) *'provisioning pipeline'* and then uses this to create a GCP landing zone project and a hardened GKE cluster which has been pre-provisioned with [ArgoCD](https://argoproj.github.io/cd/) (aka an 'ArgoCD admin cluster').
+- A GameOps Platform Admin bootstraps a [Cloud Build](https://cloud.google.com/build) *'provisioning pipeline'* and then uses this to create a GCP landing zone project and a hardened GKE cluster, which has been pre-provisioned with [ArgoCD](https://argoproj.github.io/cd/) (aka an 'ArgoCD admin cluster').
 - The ArgoCD admin cluster instance uses several powerful Kubernetes frameworks, such as [Policy Controller](https://cloud.google.com/anthos-config-management/docs/concepts/policy-controller), to create and manage Google Cloud resources using [Kubernetes Resource Model](https://github.com/kubernetes/design-proposals-archive/blob/main/architecture/resource-management.md) (KRM) tooling and a GitOps-centric approach to declarative configuration management.
-- Once the intial GCP landing zone environment is ready, the GameOps Platform Admin can proceed to customize and bundle (think [Kustomize](https://kustomize.io/) or [Helm](https://helm.sh/)) Kubernetes manifests into curated Kubernetes packages, commonly referred to as ['blueprints'](https://cloud.google.com/anthos-config-management/docs/concepts/blueprints), using the Cloud Build provisioning pipeline.  These blueprints should be staged in a source code repository (aka *source repo*) and actively monitored by ArgoCD.
-- When ArgoCD detects changes to this source repo, it automatically applies this new configuration to your GCP Organization.  This process serves as the basis of a [GitOps reconcilation loop](https://thenewstack.io/kubecon-cloud-native-patterns-of-the-gitops-pipeline/) that is used to continually create and manage the specific GCP resources which are defined in the various Kubernetes blueprint packages that GameOps relies upon.
+- Once the intial GCP landing zone environment is ready, the GameOps Platform Admin can proceed to customize and bundle (think [Kustomize](https://kustomize.io/) or [Helm](https://helm.sh/)) Kubernetes manifests into curated Kubernetes packages, commonly referred to as ['blueprints'](https://cloud.google.com/anthos-config-management/docs/concepts/blueprints), using the Cloud Build provisioning pipeline.  These blueprints can be staged in a source code repository (aka *source repo*) and actively monitored by ArgoCD.
+- When ArgoCD detects changes to this source repo, it automatically applies this new configuration to your GCP Organization.  This process serves as the basis for a [GitOps reconcilation loop](https://thenewstack.io/kubecon-cloud-native-patterns-of-the-gitops-pipeline/) that is used to continually create and manage the specific GCP resources which are defined in the various Kubernetes blueprint packages that GameOps relies upon.
 
 ![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/how-it-works.png)
 
@@ -50,19 +50,19 @@ GCP_SUPER_USER:  Enter your Google Admin Super Admin email address (e.g., admin@
 DOMAIN_VERIFICATION_EMAIL_ADDRESS:  Enter an email address that can be used to verify a domain name (e.g., your-email@example.com)
 ```
 
-Once these environment variables have been provided, the provisioning process will automatically proceed ahead by creating a hardened GKE cluster, installing ArgoCD on it, and doing tons of other random (but important) stuff.  This process will take about 90 minutes to complete, so feel free to take a break and check back in later.
+Once these environment variables have been provided, the provisioning process will proceed to create a hardened GKE cluster, install ArgoCD on it, and do tons of other random (but important) stuff.  This process will take about 90 minutes to complete, so feel free to take a break and check back in later.
 
 #### Access the ArgoCD admin console
 
-Once the initial provisioning process has completed, navigate to final step of the Cloud Build provisoning pipeline that was created in your landing zone project for details on how to connect to the ArgoCD admin console for the first time.  
+Once the initial provisioning process has completed, navigate to the final step of your landing zone's Cloud Build provisoning pipeline for details on how to connect to the ArgoCD admin console for the first time.  
 
-- These connection details include, the ArgoCD admin console URL, the default admin username, and the default admin password.
-- Please be sure to change your intial admin password at some point by following [these instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_account_update-password/)
+- These connection details include: the ArgoCD admin console URL, the default admin username, and the default admin password.
 - Both the ArgoCD URLs and passwords are randomly generated as part of the provisioning process.
+- Please be sure to change your intial admin password at some point by following [these instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_account_update-password/)!
 
 ![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-details.png)
 
-Finally, open the ArgoCD admin console URL (e.g., `https://gameops.demo-87ff.xyz`) that you see in your browser and use the auto-generated login details to get started with ArgoCD.
+Finally, open the ArgoCD admin console URL (e.g., `https://gameops.demo-87ff.xyz`) that you see in your browser and use the auto-generated login details to get started.
 ![](https://raw.githubusercontent.com/bbhuston/argocd-gameops/main/.assets/argocd-login-screen.png)
 
 ## Cleaning up
